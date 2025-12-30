@@ -3,99 +3,138 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ratking Mint Progress</title>
+<title>Ratking</title>
 <style>
     body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        background: #0f0f0f;
+        color: #fff;
         font-family: Arial, sans-serif;
         display: flex;
-        flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: 100vh;
-        background: #f0f0f0;
-        padding: 20px;
         text-align: center;
+        overflow-x: hidden;
     }
+
+    /* 淡入动画 */
+    @keyframes fadeIn {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 左上角 Logo */
+    .logo {
+        position: fixed;
+        top: 2%;
+        left: 2%;
+        z-index: 10;
+        opacity: 0;
+        animation: fadeIn 1s forwards;
+    }
+    .logo img {
+        height: clamp(24px, 4vw, 36px);
+        width: auto;
+    }
+
+    .container {
+        max-width: 90%;
+        padding: 20px;
+        opacity: 0;
+        animation: fadeIn 1s forwards;
+        animation-delay: 0.3s;
+    }
+
     h1 {
-        margin-bottom: 10px;
+        font-size: clamp(1.6rem, 5vw, 2.5rem);
+        margin-bottom: 12px;
+        opacity: 0;
+        animation: fadeIn 1s forwards;
+        animation-delay: 0.6s;
     }
-    .mint-info {
-        margin-bottom: 20px;
-        font-size: 16px;
-        color: #333;
-        line-height: 1.5;
+
+    p {
+        font-size: clamp(0.9rem, 3vw, 1.2rem);
+        margin-bottom: 24px;
+        opacity: 0;
+        animation: fadeIn 1s forwards;
+        animation-delay: 0.9s;
     }
-    .progress-container {
-        width: 80%;
-        background: #ddd;
-        border-radius: 25px;
+
+    .socials {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        opacity: 0;
+        animation: fadeIn 1s forwards;
+        animation-delay: 1.2s;
+    }
+
+    .social-btn {
+        width: clamp(40px, 10vw, 60px);
+        height: clamp(40px, 10vw, 60px);
+        border-radius: 50%;
+        border: 1px solid #ffffff33;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        background: #0f0f0f;
         overflow: hidden;
     }
-    .progress-bar {
-        height: 30px;
-        width: 0%;
-        background: #4caf50;
-        text-align: center;
-        color: white;
-        line-height: 30px;
-        font-weight: bold;
-        transition: width 0.5s, background 0.5s;
+
+    .social-btn img {
+        width: clamp(20px, 5vw, 28px);
+        height: clamp(20px, 5vw, 28px);
+        transition: filter 0.3s ease;
+    }
+
+    .social-btn:hover {
+        background: #fff;
+    }
+
+    .social-btn:hover img {
+        filter: brightness(0);
+    }
+
+    /* 手机端优化 */
+    @media (max-width: 380px) {
+        .container {
+            padding: 12px;
+        }
+        .socials {
+            gap: 12px;
+        }
     }
 </style>
 </head>
 <body>
-<h1>Ratking Mint Progress</h1>
 
-<div class="mint-info">
-    玩家向合约 <strong>0x5cfe7b37876a2badbe362d59ae624f2f3450a886</strong> 转账 <strong>0.1 OKB</strong> 即可触发 Mint。<br>
-    每个地址 <strong>只能 Mint 一份</strong>，每份可获得 <strong>100,000 Ratking</strong> 代币，总共可 Mint 5000 份。<br>
-    页面将实时显示当前 Mint 进度。
+<!-- 左上角 Logo -->
+<div class="logo">
+    <img src="logo.png" alt="Ratking Logo">
 </div>
 
-<div class="progress-container">
-    <div class="progress-bar" id="progress-bar">0%</div>
+<div class="container">
+    <h1>Ratking</h1>
+    <p>网站正在开发中，敬请期待！</p>
+
+    <div class="socials">
+        <!-- X -->
+        <a class="social-btn" href="https://x.com/ratkingbnb?s=21" target="_blank" aria-label="X">
+            <img src="x.png" alt="X Logo">
+        </a>
+
+        <!-- Telegram -->
+        <a class="social-btn" href="https://t.me/Ratking_bnb" target="_blank" aria-label="Telegram">
+            <img src="telegram.png" alt="Telegram Logo">
+        </a>
+    </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
-<script>
-const CONTRACT_ADDRESS = "0x5cfe7b37876a2badbe362d59ae624f2f3450a886";
-const ABI = [
-    "function minted() view returns (uint256)",
-    "function mintLimit() view returns (uint256)"
-];
-
-// OKB Chain 公共 RPC
-const RPC_URL = "https://exchainrpc.okex.org";
-
-const provider = new ethers.JsonRpcProvider(RPC_URL);
-const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
-
-async function updateProgress() {
-    try {
-        const minted = await contract.minted();
-        const mintLimit = await contract.mintLimit();
-        let percentage = Number(minted) / Number(mintLimit) * 100;
-
-        const progressBar = document.getElementById("progress-bar");
-
-        if (percentage >= 100) {
-            percentage = 100;
-            progressBar.style.background = "#888"; // 完成后变灰
-            progressBar.textContent = "Mint 完成";
-        } else {
-            progressBar.style.background = "#4caf50";
-            progressBar.textContent = percentage.toFixed(2) + "%";
-        }
-
-        progressBar.style.width = percentage + "%";
-    } catch (err) {
-        console.error("读取进度失败:", err);
-    }
-}
-
-// 每 10 秒刷新一次
-updateProgress();
-setInterval(updateProgress, 10000);
-</script>
 </body>
 </html>
