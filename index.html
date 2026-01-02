@@ -1,157 +1,288 @@
+
+
+
 <!DOCTYPE html>
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ratking</title>
+<title>RatKing — From Earth to Space</title>
 
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        background: #0f0f0f;
-        color: #ffffff;
-        font-family: Arial, sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        overflow-x: hidden;
-    }
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
+  background:#000;
+  color:#fff;
+  overflow-x:hidden;
+  scroll-snap-type:y proximity;
+}
 
-    /* 淡入动画 */
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+/* ===== 静态星空（不动） ===== */
+.space{
+  position:fixed;
+  inset:0;
+  background:url("stars.png") center center / cover no-repeat;
+  z-index:-5;
+}
 
-    /* 左上角 Logo */
-    .logo {
-        position: fixed;
-        top: 20px;
-        left: 24px;
-        z-index: 10;
-        opacity: 0;
-        animation: fadeIn 1s forwards;
-    }
-    .logo img {
-        height: 32px; /* 固定尺寸 */
-        width: auto;
-    }
+/* ===== 地球（可转） ===== */
+.earth{
+  position:fixed;
+  right:-260px;
+  bottom:-260px;
+  width:600px;
+  opacity:.55;
+  animation:spin 180s linear infinite;
+  z-index:-3;
+  pointer-events:none;
+}
+@keyframes spin{
+  from{transform:rotate(0)}
+  to{transform:rotate(360deg)}
+}
 
-    .container {
-        max-width: 90%;
-        padding: 20px;
-        opacity: 0;
-        animation: fadeIn 1s forwards;
-        animation-delay: 0.3s;
-    }
+/* ===== LOGO ===== */
+.header{
+  position:fixed;
+  top:20px;
+  left:20px;
+  z-index:10;
+}
+.header img{width:120px}
 
-    h1 {
-        font-size: clamp(1.6rem, 5vw, 2.5rem);
-        margin-bottom: 12px;
-        opacity: 0;
-        animation: fadeIn 1s forwards;
-        animation-delay: 0.6s;
-    }
+/* ===== 屏幕通用 ===== */
+.screen{
+  min-height:100vh;
+  padding:120px 20px 100px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  scroll-snap-align:start;
+}
 
-    p {
-        font-size: clamp(0.9rem, 3vw, 1.2rem);
-        margin-bottom: 24px;
-        opacity: 0;
-        animation: fadeIn 1s forwards;
-        animation-delay: 0.9s;
-    }
+/* ===== 第一屏 ===== */
+.hero-rat{
+  width:210px;
+  margin-bottom:34px;
+  animation:float 6s ease-in-out infinite;
+}
+@keyframes float{
+  0%{transform:translateY(0)}
+  50%{transform:translateY(-24px)}
+  100%{transform:translateY(0)}
+}
 
-    .socials {
-        display: flex;
-        justify-content: center;
-        gap: 16px;
-        opacity: 0;
-        animation: fadeIn 1s forwards;
-        animation-delay: 1.2s;
-    }
+.fade-hero{
+  opacity:0;
+  transform:translateY(40px);
+  animation:fadeUp 1.2s ease forwards;
+}
+.delay-1{animation-delay:.6s}
+.delay-2{animation-delay:1.1s}
 
-    .social-btn {
-        width: 56px;
-        height: 56px;
-        border-radius: 50%;
-        border: 1px solid #ffffff33;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: #0f0f0f;
-        transition: all 0.3s ease;
-    }
+.hero-title{
+  font-size:clamp(32px,7vw,58px);
+  font-weight:900;
+}
+.hero-sub{
+  margin-top:18px;
+  font-size:clamp(15px,3.5vw,19px);
+  line-height:1.9;
+  opacity:.9;
+}
 
-    .social-btn img {
-        width: 26px;
-        height: 26px;
-        transition: filter 0.3s ease;
-    }
+/* ===== 标题 ===== */
+.section-title{
+  font-size:clamp(28px,6vw,46px);
+  font-weight:800;
+  margin-bottom:60px;
+}
 
-    .social-btn:hover {
-        background: #ffffff;
-    }
+/* ===== 视频网格（4+4） ===== */
+.story-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:28px;
+  max-width:1200px;
+  width:100%;
+}
 
-    .social-btn:hover img {
-        filter: brightness(0);
-    }
+/* ===== 卡片 ===== */
+.card{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:20px;
+  overflow:hidden;
+  transition:.35s;
+}
+.card:hover{
+  transform:translateY(-8px);
+  background:rgba(255,255,255,.12);
+}
 
-    /* 底部邮箱（纯展示） */
-    .footer {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 14px;
-        opacity: 0.65;
-        letter-spacing: 0.5px;
-        animation: fadeIn 1s forwards;
-        animation-delay: 1.6s;
-    }
+.video-wrap{
+  width:100%;
+  aspect-ratio:3 / 4;
+  overflow:hidden;
+}
+.video-wrap video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
 
-    /* 手机端微调 */
-    @media (max-width: 380px) {
-        .social-btn {
-            width: 48px;
-            height: 48px;
-        }
-        .social-btn img {
-            width: 22px;
-            height: 22px;
-        }
-    }
+/* ===== 文案动效 ===== */
+.fade-text{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity .9s ease, transform .9s ease;
+  padding:18px;
+  font-size:15px;
+  line-height:1.8;
+}
+.fade-text.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ===== CA / 社交 ===== */
+.ca{
+  margin-top:70px;
+  padding:16px 22px;
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:12px;
+  background:rgba(255,255,255,.06);
+  font-size:14px;
+  word-break:break-all;
+}
+
+.social{
+  margin-top:40px;
+  display:flex;
+  gap:18px;
+}
+.social a{
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  background:rgba(255,255,255,.12);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:.3s;
+}
+.social a:hover{
+  background:rgba(255,255,255,.3);
+  transform:translateY(-4px);
+}
+.social img{width:22px}
+
+.footer{
+  margin-top:40px;
+  font-size:14px;
+  opacity:.8;
+}
+
+/* ===== 动效 ===== */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(40px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* ===== 响应式 ===== */
+@media(max-width:900px){
+  .story-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:480px){
+  .story-grid{grid-template-columns:1fr}
+  .hero-rat{width:150px}
+  .earth{width:420px}
+  .header img{width:90px}
+}
 </style>
 </head>
 
 <body>
 
-<!-- 左上角 Logo -->
-<div class="logo">
-    <img src="logo.png" alt="Ratking Logo">
+<div class="space"></div>
+<img src="earth.png" class="earth">
+
+<div class="header">
+  <img src="logo.png">
 </div>
 
-<div class="container">
-    <h1>Ratking</h1>
-    <p>网站正在开发中，敬请期待！</p>
-
-    <div class="socials">
-        <a class="social-btn" href="https://x.com/ratkingbnb?s=21" target="_blank" aria-label="X">
-            <img src="x.png" alt="X">
-        </a>
-
-        <a class="social-btn" href="https://t.me/Ratking_bnb" target="_blank" aria-label="Telegram">
-            <img src="telegram.png" alt="Telegram">
-        </a>
-    </div>
+<!-- 第一屏 -->
+<div class="screen">
+  <img src="rat.png" class="hero-rat">
+  <div class="hero-title fade-hero">唯一从地球走向太空的动物</div>
+  <div class="hero-sub fade-hero delay-1">它是动物界的王者</div>
+  <div class="hero-sub fade-hero delay-2">
+    未来，必然是币圈的王者<br><strong>— 鼠王 RatKing</strong>
+  </div>
 </div>
 
-<!-- 底部邮箱（不可点击） -->
-<div class="footer">
-    官方邮箱：admin@ratking.xyz
+<!-- 第二屏 -->
+<div class="screen">
+
+<div class="section-title">鼠王的诞生</div>
+  <div class="story-grid">
+    <div class="card"><div class="video-wrap"><video src="s1.mp4" muted loop playsinline class="v"></video></div><p class="fade-text">他们叫我们老鼠，因为我们来自地下。</p></div>
+    <div class="card"><div class="video-wrap"><video src="s2.mp4" muted loop playsinline class="v"></video></div><p class="fade-text">被忽视、被测试，却从未被淘汰。</p></div>
+    <div class="card"><div class="video-wrap"><video src="s3.mp4" muted loop playsinline class="v"></video></div><p class="fade-text"><strong>老鼠，是唯一进入太空的动物。</strong></p></div>
+    <div class="card"><div class="video-wrap"><video src="s4.mp4" muted loop playsinline class="v"></video></div><p class="fade-text">它不是逃离，而是完成使命。</p></div>
+    <div class="card"><div class="video-wrap"><video src="s5.mp4" muted loop playsinline class="v"></video></div><p class="fade-text">从地底，到真空。</p></div>
+    <div class="card"><div class="video-wrap"><video src="s6.mp4" muted loop playsinline class="v"></video></div><p class="fade-text">不是野心，是必然。</p></div>
+    <div class="card"><div class="video-wrap"><video src="s7.mp4" muted loop playsinline class="v"></video></div><p class="fade-text">当历史被写下，它已在场。</p></div>
+    <div class="card"><div class="video-wrap"><video src="s8.mp4" muted loop playsinline class="v"></video></div><p class="fade-text">王，从这一刻诞生。</p></div>
+  </div>
 </div>
+
+<!-- 第三屏 -->
+<div class="screen">
+  <div class="section-title">王者的共识</div>
+  <div class="story-grid">
+    <div class="card"><div class="video-wrap"><video src="k1.mp4" muted loop playsinline class="v"></video></div><p class="fade-text">RatKing 属于整个鼠族。</p></div>
+    <div class="card"><div class="video-wrap"><video src="k2.mp4" muted loop playsinline class="v"></video></div><p class="fade-text"><strong>能分食的，才配称王。</strong></p></div>
+    <div class="card"><div class="video-wrap"><video src="k3.mp4" muted loop playsinline class="v"></video></div><p class="fade-text">王的职责，是建立秩序。</p></div>
+    <div class="card"><div class="video-wrap"><video src="k4.mp4" muted loop playsinline class="v"></video></div><p class="fade-text">不是统治，是承载。</p></div>
+    <div class="card"><div class="video-wrap"><video src="k5.mp4" muted loop playsinline class="v"></video></div><p class="fade-text">这顶王冠，由族群托举。</p></div>
+    <div class="card"><div class="video-wrap"><video src="k6.mp4" muted loop playsinline class="v"></video></div><p class="fade-text">动物界的王者。</p></div>
+    <div class="card"><div class="video-wrap"><video src="k7.mp4" muted loop playsinline class="v"></video></div><p class="fade-text">终将成为币圈的王者。</p></div>
+    <div class="card"><div class="video-wrap"><video src="k8.mp4" muted loop playsinline class="v"></video></div><p class="fade-text"><strong>RatKing。</strong></p></div>
+  </div>
+
+  <div class="ca">
+    Contract Address<br>
+    0xc3cd6531634d6d0cce95b0422b9f8d8b0aa94444
+  </div>
+
+  <div class="social">
+    <a href="https://x.com/ratkingbnb?s=21" target="_blank"><img src="x.png"></a>
+    <a href="https://t.me/Ratking_bnb" target="_blank"><img src="telegram.png"></a>
+  </div>
+
+  <div class="footer">官方邮箱：admin@ratking.xyz</div>
+</div>
+
+<script>
+/* 视频 & 文案滚动触发 */
+const obs=new IntersectionObserver(e=>{
+  e.forEach(i=>{
+    if(i.isIntersecting){
+      i.target.play?.().catch(()=>{});
+      i.target.classList.add("show");
+    }else{
+      i.target.pause?.();
+    }
+  });
+},{threshold:.6});
+
+document.querySelectorAll("video.v").forEach(v=>obs.observe(v));
+document.querySelectorAll(".fade-text").forEach(t=>obs.observe(t));
+</script>
 
 </body>
 </html>
